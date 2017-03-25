@@ -1,0 +1,11 @@
+
+Options -MultiViews -Indexes
+DirectorySlash On
+
+RewriteEngine On
+RewriteBase /txt/
+
+# accept some known filetypes
+RewriteCond %{SCRIPT_FILENAME} !^.*\.(jpg)$
+RewriteRule ^ routing.php [QSA,L]
+
