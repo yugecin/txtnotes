@@ -55,14 +55,57 @@ function printmessages() {
 	echo '</div>';
 }
 
-function verify_username($name) {
+function verify_username() {
 	static $phpisnotc = '__________xxxxxxx__________________________xxxxxx__________________________xxx_';
-	for ($i = strlen($name); $i > 0;) {
-		$pos = ord($name[--$i]) - 48;
+	global $user;
+	for ($i = strlen($user); $i > 0;) {
+		$pos = ord($user[--$i]) - 48;
 		if ($pos < 0 || $pos > 77 || $phpisnotc[$pos] == 'x') {
 			return false;
 		}
 	}
 	return true;
+}
+
+function make_url($method, $inode) {
+	global $URL, $user;
+	echo $URL . $user . '/' . $method . '/' . $inode . '/';
+}
+
+function make_link($method, $inode, $text) {
+	echo '<a href="';
+	make_url($method, $inode);
+	echo '">';
+	echo $text;
+	echo '</a>';
+}
+
+function get_db() {
+	global $user;
+	return new PDO('sqlite:' . $user. '.db');
+}
+
+function simple_select($db, $select, $bindings) {
+	$s = $db->prepare($select);
+	if ($s === false) {
+		die(print_r($db->errorinfo(), true));
+	}
+	if ($s->execute($bindings) === false) {
+		die(print_r($db->errorinfo(), true));
+	}
+	$d = $s->fetchAll(PDO::FETCH_CLASS);
+	$s = null;
+	return $d;
+}
+
+function simple_execute($db, $execute, $bindings) {
+	$s = $db->prepare($execute);
+	if ($s === false) {
+		die(print_r($db->errorinfo(), true));
+	}
+	if ($s->execute($bindings) === false) {
+		die(print_r($db->errorinfo(), true));
+	}
+	$s = null;
 }
 

@@ -1,41 +1,43 @@
 <?php
 {
-	if (!isset($_POST['user']) || !isset($_POST['pass']) || !isset($_POST['passc'])) {
+	if (!isset($postvars['user']) || !isset($postvars['pass']) || !isset($postvars['passc'])) {
 		goto noregister; // bite me
 	}
-	if ($_POST['pass'] != $_POST['passc']) {
+	if ($postvars['pass'] != $postvars['passc']) {
 		$messages[] = 'Given passwords do not match! You need to enter your desired password twice to make sure you haven\'t made any typing mistakes.';
 		goto noregister;
 	}
-	if (!verify_username($_POST['user'])) {
+	$user = $postvars['user'];
+	if (!verify_username()) {
 		$messages[] = 'Your username does not comply, please check the instructions at the username field.';
 		goto noregister;
 	}
-	if (file_exists($_POST['user'] . '.db')) {
+	if (file_exists($user . '.db')) {
 		$messages[] = 'This username is not available.';
 		goto noregister;
 	}
 	try {
-		$db = new PDO('sqlite:' . $_POST['user'] . '.db');
-		$db->query('CREATE TABLE files(inode INTEGER PRIMARY KEY, parent INTEGER, flags INTEGER, content TEXT)');
+		$db = get_db();
+		$db->query('CREATE TABLE files(inode INTEGER PRIMARY KEY, parent INTEGER, isdir INTEGER, name TEXT, content TEXT)');
+
 	} catch (PDOException $e) {
 		$messages[] = 'Error creating database';
 		goto noregister;
 	}
-	if (!empty($_POST['pass'])) {
-		$res = file_put_contents($_POST['user'] . '.pw', password_hash($_POST['pass'], PASSWORD_BCRYPT));
+	if (!empty($postvars['pass'])) {
+		$res = file_put_contents($user . '.pw', password_hash($postvars['pass'], PASSWORD_BCRYPT));
 		if ($res === false) {
 			$messages[] = 'Error creating password file.';
-			$res = unlink($_POST['user'] . '.db');
+			$res = unlink($user . '.db');
 			if ($res === false) {
 				$messages[] = 'Unable to delete database after failure (this is bad).';
 			}
 			goto noregister;
 		}
 		session_start();
-		$_SESSION['user'] = $_POST['user'];
+		$_SESSION['user'] = $user;
 	}
-	header('Location: ' . $URL . $_POST['user'] . '/');
+	header('Location: ' . $URL . $user . '/');
 	die();
 
 } noregister:
@@ -65,7 +67,7 @@ unsetpost('passc');
 			<?php input('type:text,name:user'); ?><br/>
 			<small><em>Usernames are case sensitive!<br/>
 			Your username determines your realm, you can visit your realm by going to <strong><?php echo $URL; ?>your username</strong><br/>
-			Your username can only contain ABCDEFGHIJKLMNOPQRSTUVWXYZ<wbr/>abcdefghijklmnopqrstuvwxyz<wbr/>0123456789<wbr/>_~</small></em>
+			Your username can only contain ABCDEFGHIJKLMNOPQRSTUVWXYZ<wbr/>abcdefghijklmnopqrstuvwxyz<wbr/>0123456789<wbr/>_~</em></small>
 		</p>
 		<p>
 			Password (Optional): <br/>

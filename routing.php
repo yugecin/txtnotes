@@ -33,7 +33,7 @@ if (strlen($url) == 0) {
 $url = explode('/', $url);
 $user = $url[0];
 
-if (!verify_username($user) || !file_exists($user . '.db')) {
+if (!verify_username() || !file_exists($user . '.db')) {
 	$messages[] = 'This user does not exist.';
 	include 'index.php';
 	die();
@@ -59,4 +59,25 @@ HTML;
 	}
 
 }
+
+$method = 'browse';
+if (count($url) > 1 && in_array($url[1], array('logout', 'delete', 'deleteconfirm', 'edit', 'move'))) {
+	$method = $url[1];
+}
+
+if ($method === 'logout') {
+	session_destroy();
+	header('Location: ' . $URL);
+	die();
+}
+
+$inode = 0;
+
+if (count($url) > 2 && is_numeric($url[2])) {
+	$inode = $url[2];
+	$inode++;
+	$inode--; // oh so safe
+}
+
+include $method . '.php';
 
