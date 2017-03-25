@@ -43,7 +43,22 @@ if (file_exists($user . '.pw')) {
 	session_start();
 	if (!isset($_SESSION['user']) || $_SESSION['user'] !== $user) {
 		session_destroy();
+		if (isset($postvars['loginpass']) && password_verify($postvars['loginpass'], file_get_contents($user . '.pw'))) {
+			session_start();
+			unsetpost('loginpass');
+			$_SESSION['user'] = $user;
+			goto authenticated;
+		}
+		unsetpost('loginpass');
 		$messages[] = 'Unautorized';
+		$extrafields = '';
+		foreach ($postvars as $k => $v) {
+			$extrafields .= '<input type="hidden" name="';
+			$extrafields .= htmlentities($k);
+			$extrafields .= '" value="';
+			$extrafields .= htmlentities($v);
+			$extrafields .= '"/>';
+		}
 		$extrahtml =<<<HTML
 <form action="./" method="POST">
 <p>
@@ -53,12 +68,14 @@ if (file_exists($user . '.pw')) {
 <p>
 	<input type="submit" value="Login" />
 </p>
+{$extrafields}
+</form>
 HTML;
 		include 'error.php';
 		die();
 	}
 
-}
+} authenticated:
 
 $method = 'browse';
 if (count($url) > 1 && in_array($url[1], array('logout', 'delete', 'deleteconfirm', 'edit', 'move'))) {

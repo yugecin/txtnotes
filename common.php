@@ -109,3 +109,32 @@ function simple_execute($db, $execute, $bindings) {
 	$s = null;
 }
 
+function get_path($db, $inode) {
+	$path = array();
+	if ($inode != 0) {
+		$parentinode = $inode;
+		$getnode = $db->prepare('SELECT parent, isdir, name FROM files WHERE inode=?');
+		while ($parentinode != 0) {
+			$getnode->execute(array($parentinode));
+			$node = $getnode->fetchAll(PDO::FETCH_CLASS);
+			$node = $node[0];
+			$node->inode = $parentinode;
+			$node->name = htmlentities($node->name);
+			array_unshift($path, $node);
+			$parentinode = $node->parent;
+		}
+	}
+	return $path;
+}
+
+function show_path($path) {
+	make_link('browse', 0, 'root');
+	echo '/';
+	foreach($path as $p) {
+		make_link($p->isdir ? 'browse' : 'edit', $p->inode, $p->name);
+		if ($p->isdir) {
+			echo '/';
+		}
+	}
+}
+

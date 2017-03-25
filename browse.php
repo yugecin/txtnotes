@@ -1,22 +1,7 @@
 <?php
 
-$path = array();
-
 $db = get_db();
-
-if ($inode != 0) {
-	$parentinode = $inode;
-	$getnode = $db->prepare('SELECT parent, isdir, name FROM files WHERE inode=?');
-	while ($parentinode != 0) {
-		$getnode->execute(array($parentinode));
-		$node = $getnode->fetchAll(PDO::FETCH_CLASS);
-		$node = $node[0];
-		$node->inode = $parentinode;
-		$node->name = htmlentities($node->name);
-		array_unshift($path, $node);
-		$parentinode = $node->parent;
-	}
-}
+$path = get_path($db, $inode);
 
 $newfile = null;
 $isdir = 0;
@@ -55,13 +40,7 @@ $files = simple_select($db, 'SELECT isdir, name, inode FROM files WHERE parent=?
 </head>
 <body>
 	<?php printmessages(); ?>
-	<h3>
-		<a href="<?php make_url('browse', 0); ?>">root</a>/
-		<?php foreach($path as $p) {
-			make_link('browse', $p->inode, $p->name);
-			echo '/';
-		} ?>
-	</h3>
+	<h3><?php show_path($path); ?></h3>
 	<hr/>
 	<table border="0" width="100%">
 		<thead>
