@@ -50,6 +50,7 @@ $files = simple_select($db, 'SELECT isdir, name, inode FROM files WHERE parent=?
 		body{max-width:50em;margin:auto;font-family:Tahoma,sans-serif;font-size:100%}
 		th{text-align:left}
 		td{font-family:monospace;white-space:pre}
+		a,a:visited{color:#00f}
 	</style>
 </head>
 <body>
