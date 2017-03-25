@@ -7,6 +7,7 @@
 	<style type="text/css">
 		body{max-width:50em;margin:auto;font-family:Tahoma,sans-serif;font-size:100%;}
 		input{width:100%;}
+		a,a:visited{color:#00f}
 	</style>
 </head>
 <body>
