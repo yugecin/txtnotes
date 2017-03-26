@@ -24,6 +24,11 @@ if ($newfile != null) {
 
 $files = simple_select($db, 'SELECT isdir, name, inode FROM files WHERE parent=? ORDER BY isdir DESC, name ASC', array($inode));
 
+$parentinode = 0;
+if (count($path) > 1) {
+	$parentinode = $path[count($path)-2]->inode;
+}
+
 ?>
 <!doctype HTML>
 <html>
@@ -47,7 +52,6 @@ $files = simple_select($db, 'SELECT isdir, name, inode FROM files WHERE parent=?
 			<tr><th>Name</th><th width="120">actions</th></tr>
 		</thead>
 		<tbody>
-			<tr><td>&lt;DIR&gt; <a href="<?php make_url('browse', $inode); ?>">.</a></td><td></td></tr>
 			<?php if($inode != 0): ?>
 			<tr><td>&lt;DIR&gt; <a href="<?php make_url('browse', $parentinode); ?>">..</a></td><td></td></tr>
 			<?php endif; ?>
