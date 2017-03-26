@@ -85,6 +85,16 @@ function get_db() {
 	return new PDO('sqlite:' . $user. '.db');
 }
 
+function load_settings($db) {
+	$s = simple_select($db, 'SELECT key,value FROM settings', array());
+	$settings = new stdClass();
+	foreach ($s as $setting) {
+		$key = $setting->key;
+		$settings->$key = $setting->value;
+	}
+	return $settings;
+}
+
 function simple_select($db, $select, $bindings) {
 	$s = $db->prepare($select);
 	if ($s === false) {

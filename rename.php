@@ -1,6 +1,7 @@
 <?php
 
 $db = get_db();
+$settings = load_settings($db);
 $path = get_path($db, $inode);
 
 $content = '';
@@ -25,10 +26,10 @@ if (count($file) != 1) {
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">
-		body{max-width:50em;margin:auto;font-family:Tahoma,sans-serif;font-size:100%}
+		body{max-width:50em;margin:auto;font-family:<?php echo $settings->fontfamily; ?>,sans-serif;font-size:<?php echo $settings->fontsize; ?>}
 		th{text-align:left}
 		td{font-family:monospace;white-space:pre}
-		a,a:visited{color:#00f}
+		a,a:visited{color:#00f}<?php echo $settings->customcss; ?>
 		textarea{width:100%}
 	</style>
 </head>

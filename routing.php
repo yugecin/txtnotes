@@ -78,7 +78,7 @@ HTML;
 } authenticated:
 
 $method = 'browse';
-if (count($url) > 1 && in_array($url[1], array('logout', 'delete', 'edit', 'move', 'rename'))) {
+if (count($url) > 1 && in_array($url[1], array('logout', 'delete', 'edit', 'move', 'rename', 'settings', 'passwd'))) {
 	$method = $url[1];
 }
 

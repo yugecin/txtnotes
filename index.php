@@ -19,7 +19,10 @@
 	try {
 		$db = get_db();
 		$db->query('CREATE TABLE files(inode INTEGER PRIMARY KEY, parent INTEGER, isdir INTEGER, name TEXT, content TEXT)');
-
+		$db->query('CREATE TABLE settings(key TEXT, value TEXT)');
+		$db->query('INSERT INTO settings(key,value) VALUES ("fontfamily","Tahoma")');
+		$db->query('INSERT INTO settings(key,value) VALUES ("fontsize","100%")');
+		$db->query('INSERT INTO settings(key,value) VALUES ("customcss","")');
 	} catch (PDOException $e) {
 		$messages[] = 'Error creating database';
 		goto noregister;
