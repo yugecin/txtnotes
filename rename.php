@@ -5,7 +5,7 @@ $settings = load_settings($db);
 $path = get_path($db, $inode);
 
 $content = '';
-$file = simple_select($db, 'SELECT inode FROM files WHERE inode=?', array($inode));
+$file = simple_select($db, 'SELECT inode,name FROM files WHERE inode=?', array($inode));
 
 if (count($file) != 1) {
 	$file = null;
@@ -15,6 +15,8 @@ if (count($file) != 1) {
 		simple_execute($db, 'UPDATE files SET name=? WHERE inode=?', array($postvars['to'], $inode));
 		header('Location: ' . $URL . $user . '/browse/' . get_parentinode($path) . '/');
 		die();
+	} else {
+		$postvars['to'] = $file[0]->name;
 	}
 }
 
@@ -30,6 +32,7 @@ if (count($file) != 1) {
 		th{text-align:left}
 		td{font-family:monospace;white-space:pre}
 		a,a:visited{color:#00f}<?php echo $settings->customcss; ?>
+		input{width:100%}
 	</style>
 </head>
 <body>
@@ -38,7 +41,7 @@ if (count($file) != 1) {
 	<?php if ($file != null): ?>
 	New name:<br/>
 	<form action="<?php make_url('rename', $inode); ?>" method="POST">
-		<?php input('type:text,name:to'); ?>
+		<?php input('type:text,name:to'); ?><br/>
 		<input type="submit" value="move" />
 	</form>
 	<?php endif; ?>
