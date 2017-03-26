@@ -138,3 +138,10 @@ function show_path($path) {
 	}
 }
 
+function get_parentinode($path) {
+	if (count($path) > 1) {
+		return $path[count($path)-2]->inode;
+	}
+	return 0;
+}
+
