@@ -1,6 +1,6 @@
 
-txt
----
+txtnotes
+--------
 Webbased plaintext notekeeper. Simple. Minimalistic (as in [motherfuckingwebsite.com](http://www.motherfuckingwebsite.com)). Distraction-free (see [time well spent](https://www.timewellspent.io/)).
 
 Created with php. No frameworks, no bullshit, only code. It might be a little mess, but it ain't no beauty contest. It's all about speed here.
