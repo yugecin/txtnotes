@@ -50,28 +50,7 @@ if (file_exists($user . '.pw')) {
 			goto authenticated;
 		}
 		unsetpost('loginpass');
-		$messages[] = 'Unautorized';
-		$extrafields = '';
-		foreach ($postvars as $k => $v) {
-			$extrafields .= '<input type="hidden" name="';
-			$extrafields .= htmlentities($k);
-			$extrafields .= '" value="';
-			$extrafields .= htmlentities($v);
-			$extrafields .= '"/>';
-		}
-		$extrahtml =<<<HTML
-<form action="./" method="POST">
-<p>
-	Password:<br/>
-	<input type="password" name="loginpass" />
-</p>
-<p>
-	<input type="submit" value="Login" />
-</p>
-{$extrafields}
-</form>
-HTML;
-		include 'error.php';
+		include 'unauthorized.php';
 		die();
 	}
 
