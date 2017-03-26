@@ -12,13 +12,21 @@ if (count($file) != 1) {
 } else {
 	if (isset($postvars['to'])) {
 		$target = simple_select($db, 'SELECT isdir, inode FROM files WHERE inode=?', array($postvars['to']));
-		if (count($target) == 1 && $target[0]->isdir == 1) {
-			simple_execute($db, 'UPDATE files SET parent=? WHERE inode=?', array($target[0]->inode, $inode));
-			header('Location: ' . $URL . $user . '/browse/' . $target[0]->inode . '/');
-			die();
+		if (count($target) != 1 || $target[0]->isdir != 1) {
+			$messages[] = 'Invalid target.';
+			goto nomove;
 		}
-		$messages[] = 'Invalid target.';
-	}
+		$newpath = get_path($db, $target[0]->inode);
+		foreach ($newpath as $p) {
+			if ($p->inode == $inode) {
+				$messages[] = 'Invalid target. A directory cannot be placed into itself or subdirectories.';
+				goto nomove;
+			}
+		}
+		simple_execute($db, 'UPDATE files SET parent=? WHERE inode=?', array($target[0]->inode, $inode));
+		header('Location: ' . $URL . $user . '/browse/' . $target[0]->inode . '/');
+		die();
+	} nomove:
 	$folders = simple_select($db, 'SELECT inode, parent, name FROM files WHERE isdir=1', array());
 	$resolvedfolders = array();
 
