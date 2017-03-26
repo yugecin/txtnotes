@@ -16,6 +16,5 @@ Created with php. No frameworks, no bullshit, only code. It might be a little me
 [MIT](/LICENSE)
 
 ### Screenshots
-![ss2](https://cloud.githubusercontent.com/assets/12662260/24330735/5bf9b23c-1225-11e7-858d-2571d17e779b.png)
----
-![ss1](https://cloud.githubusercontent.com/assets/12662260/24330733/538f7942-1225-11e7-93e7-6b61cbf258a5.png)
+[home](https://cloud.githubusercontent.com/assets/12662260/24330735/5bf9b23c-1225-11e7-858d-2571d17e779b.png)
+[browser](https://cloud.githubusercontent.com/assets/12662260/24330733/538f7942-1225-11e7-93e7-6b61cbf258a5.png)
