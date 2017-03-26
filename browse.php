@@ -85,6 +85,7 @@ $files = simple_select($db, 'SELECT isdir, name, inode FROM files WHERE parent=?
 	</form>
 	<hr/>
 	<?php make_link('settings', 0, 'Settings'); ?><br/>
+	<?php make_link('passwd', 0, 'Change password'); ?><br/>
 	<?php make_link('logout', 0, 'Logout'); ?>
 </body>
 </html>

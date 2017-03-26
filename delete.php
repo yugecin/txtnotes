@@ -38,7 +38,6 @@ if (count($file) != 1) {
 		th{text-align:left}
 		td{font-family:monospace;white-space:pre}
 		a,a:visited{color:#00f}<?php echo $settings->customcss; ?>
-		textarea{width:100%}
 	</style>
 </head>
 <body>
