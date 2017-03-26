@@ -11,30 +11,35 @@ if (count($file) != 1) {
 	$messages[] = 'File does not exist.';
 } else {
 	if (isset($postvars['to'])) {
-		$target = simple_select($db, 'SELECT isdir, inode FROM files WHERE inode=?', array($postvars['to']));
-		if (count($target) != 1 || $target[0]->isdir != 1) {
+		$newparent = $postvars['to'];
+		$target = simple_select($db, 'SELECT isdir, inode FROM files WHERE inode=?', array($newparent));
+		if ($newparent != 0 && (count($target) != 1 || $target[0]->isdir != 1)) {
 			$messages[] = 'Invalid target.';
 			goto nomove;
 		}
-		$newpath = get_path($db, $target[0]->inode);
+		$newpath = get_path($db, $newparent);
 		foreach ($newpath as $p) {
 			if ($p->inode == $inode) {
 				$messages[] = 'Invalid target. A directory cannot be placed into itself or subdirectories.';
 				goto nomove;
 			}
 		}
-		simple_execute($db, 'UPDATE files SET parent=? WHERE inode=?', array($target[0]->inode, $inode));
-		header('Location: ' . $URL . $user . '/browse/' . $target[0]->inode . '/');
+		simple_execute($db, 'UPDATE files SET parent=? WHERE inode=?', array($newparent, $inode));
+		header('Location: ' . $URL . $user . '/browse/' . $newparent . '/');
 		die();
 	} nomove:
 	$folders = simple_select($db, 'SELECT inode, parent, name FROM files WHERE isdir=1', array());
 	$resolvedfolders = array();
 
-	$resolvedfolders[0] = 'root/';
+	$forbiddenfolders = array();
+	$resolvedfolders[0] = '/root/';
 	while (count($folders) > 0) {
 		$tounset = array();
 		foreach ($folders as $k => $f) {
-			if (isset($resolvedfolders[$f->parent])) {
+			if ($f->inode == $inode || in_array($f->parent, $forbiddenfolders)) {
+				$forbiddenfolders[] = $f->inode;
+				$tounset[] = $k;
+			} else if (isset($resolvedfolders[$f->parent])) {
 				$resolvedfolders[$f->inode] = $resolvedfolders[$f->parent] . htmlentities($f->name) . '/';
 				$tounset[] = $k;
 			}
