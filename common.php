@@ -97,10 +97,10 @@ function load_settings($db) {
 function simple_select($db, $select, $bindings) {
 	$s = $db->prepare($select);
 	if ($s === false) {
-		die(print_r($db->errorinfo(), true));
+		dberr($db);
 	}
 	if ($s->execute($bindings) === false) {
-		die(print_r($db->errorinfo(), true));
+		dberr($db);
 	}
 	$d = $s->fetchAll(PDO::FETCH_CLASS);
 	$s = null;
@@ -110,10 +110,10 @@ function simple_select($db, $select, $bindings) {
 function simple_execute($db, $execute, $bindings) {
 	$s = $db->prepare($execute);
 	if ($s === false) {
-		die(print_r($db->errorinfo(), true));
+		dberr($db);
 	}
 	if ($s->execute($bindings) === false) {
-		die(print_r($db->errorinfo(), true));
+		dberr($db);
 	}
 	$s = null;
 }
@@ -154,3 +154,7 @@ function get_parentinode($path) {
 	return 0;
 }
 
+function dberr($db) {
+	$inf = $db->errorinfo();
+	die('database failure<br/>SQLSTATE:' . $inf[0] . ' code:' . $inf[1] . ' msg:' . $inf[2]);
+}
