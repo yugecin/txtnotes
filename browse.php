@@ -45,14 +45,21 @@ $files = simple_select($db, 'SELECT isdir, name, inode, LENGTH(content) AS size 
 	<hr/>
 	<table border="0" width="100%">
 		<thead>
-			<tr><th>Name</th><th></th><th width="120">actions</th></tr>
+			<tr><th width="1%">EDIT</th><th width="1%">SIZE</th><th width="auto">NAME</th></tr>
 		</thead>
 		<tbody>
 			<?php if($inode != 0): ?>
-			<tr><td>&lt;DIR&gt;</td><td><a href="<?php make_url('browse', get_parentinode($path)); ?>">..</a></td><td></td></tr>
+			<tr><td></td><td>&lt;DIR&gt;</td><td><a href="<?php make_url('browse', get_parentinode($path)); ?>">..</a></td></tr>
 			<?php endif; ?>
 			<?php foreach($files as $f) {
 				echo '<tr><td>';
+				make_link('move', $f->inode, 'M');
+				echo ' ';
+				make_link('rename', $f->inode, 'R');
+				echo ' ';
+				make_link('delete', $f->inode, 'D');
+				echo ' ';
+				echo '</td><td>';
 				if ($f->isdir) {
 					echo '&lt;DIR&gt;';
 					echo '</td><td>';
@@ -64,12 +71,6 @@ $files = simple_select($db, 'SELECT isdir, name, inode, LENGTH(content) AS size 
 					echo '</td><td>';
 					make_link('edit', $f->inode, htmlentities($f->name));
 				}
-				echo '</td><td>';
-				make_link('move', $f->inode, 'move');
-				echo ' | ';
-				make_link('rename', $f->inode, 'rename');
-				echo ' | ';
-				make_link('delete', $f->inode, 'delete');
 				echo '</td></tr>';
 			} ?>
 		</tbody>
