@@ -23,7 +23,7 @@ if ($newfile != null) {
 	}
 }
 
-$files = simple_select($db, 'SELECT isdir, name, inode FROM files WHERE parent=? ORDER BY isdir DESC, name ASC', array($inode));
+$files = simple_select($db, 'SELECT isdir, name, inode, LENGTH(content) AS size FROM files WHERE parent=? ORDER BY isdir DESC, name ASC', array($inode));
 
 ?>
 <!doctype HTML>
@@ -45,19 +45,23 @@ $files = simple_select($db, 'SELECT isdir, name, inode FROM files WHERE parent=?
 	<hr/>
 	<table border="0" width="100%">
 		<thead>
-			<tr><th>Name</th><th width="120">actions</th></tr>
+			<tr><th>Name</th><th></th><th width="120">actions</th></tr>
 		</thead>
 		<tbody>
 			<?php if($inode != 0): ?>
-			<tr><td>&lt;DIR&gt; <a href="<?php make_url('browse', get_parentinode($path)); ?>">..</a></td><td></td></tr>
+			<tr><td>&lt;DIR&gt;</td><td><a href="<?php make_url('browse', get_parentinode($path)); ?>">..</a></td><td></td></tr>
 			<?php endif; ?>
 			<?php foreach($files as $f) {
 				echo '<tr><td>';
 				if ($f->isdir) {
-					echo '&lt;DIR&gt; ';
+					echo '&lt;DIR&gt;';
+					echo '</td><td>';
 					make_link('browse', $f->inode, htmlentities($f->name));
 				} else {
-					echo '      ';
+					if ($f->size > 0) {
+						echo str_repeat(' ', 5 - strlen($f->size)) . $f->size;
+					}
+					echo '</td><td>';
 					make_link('edit', $f->inode, htmlentities($f->name));
 				}
 				echo '</td><td>';
