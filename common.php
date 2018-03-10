@@ -3,8 +3,7 @@ if (!function_exists('password_hash')) {
 	include('password.php'); // see https://github.com/ircmaxell/password_compat/blob/master/lib/password.php
 }
 
-$PATH = '/txt/';
-$URL = 'http://localhost:8080' . $PATH;
+require 'path.php';
 
 $messages = array();
 
